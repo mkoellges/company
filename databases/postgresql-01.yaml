@@ -4,7 +4,6 @@ metadata:
   name: postgresql-01
   namespace: databases
 spec:
-  image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi8-15.8-2
   shutdown: false
   standby:
     enabled: false
@@ -12,7 +11,7 @@ spec:
   monitoring:
     pgmonitor:
       exporter:
-        image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres-exporter:ubi8-5.7.0-0 # For 15.8
+        image: ""
   proxy:
     pgBouncer:
       replicas: 3
