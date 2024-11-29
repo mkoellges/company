@@ -1,0 +1,138 @@
+apiVersion: postgres-operator.crunchydata.com/v1beta1
+kind: PostgresCluster
+metadata:
+  name: postgresql-01
+  namespace: databases
+spec:
+  image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi8-15.8-2
+  shutdown: false
+  standby:
+    enabled: false
+    repoName: repo1
+  monitoring:
+    pgmonitor:
+      exporter:
+        image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres-exporter:ubi8-5.3.1-0
+  proxy:
+    pgBouncer:
+      replicas: 3
+      config:
+        global:
+          max_client_conn: '250'
+          default_pool_size: '250'
+          max_db_connections: '250'
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: postgres-operator.crunchydata.com/role
+                    operator: In
+                    values:
+                      - pgbouncer
+              topologyKey: kubernetes.io/hostname
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: node-role.kubernetes.io/database
+                    operator: Exists
+      tolerations:
+        - effect: NoSchedule
+          key: dedicated
+          value: database
+          operator: Equal
+  patroni:
+    dynamicConfiguration:
+      postgresql:
+        parameters:
+          effective_cache_size: 11GB
+          shared_buffers: 4GB
+          work_mem: 32MB
+          max_connections: 250
+        pg_hba:
+          - "hostssl all postgres 0.0.0.0/0 cert"
+          - "hostssl all postgres ::/0 cert"
+          - "hostssl prod_billing_1 all all scram-sha-256"
+          - "hostssl prod_hrc_core_1 all all scram-sha-256"
+          - "hostssl prod_cds_1 all all scram-sha-256"
+          - "hostssl prod_als_1 all all scram-sha-256"
+          - "hostssl prod_els_1 all all scram-sha-256"
+          - "hostssl postgres all all scram-sha-256"
+          - "host postgres readaccess all scram-sha-256"
+  users:
+    - name: cgm-admin
+      options: SUPERUSER
+      password:
+        type: ASCII
+    - name: she-admin
+      options: SUPERUSER
+      password:
+        type: ASCII
+  postgresVersion: 15
+  instances:
+    - name: cluster1
+      replicas: 3
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: postgres-operator.crunchydata.com/role
+                    operator: In
+                    values:
+                      - master
+              topologyKey: kubernetes.io/hostname
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: node-role.kubernetes.io/database
+                    operator: Exists
+      tolerations:
+        - effect: NoSchedule
+          key: dedicated
+          value: database
+          operator: Equal
+      resources:
+        requests:
+          memory: 12Gi
+        limits:
+          memory: 12Gi
+      dataVolumeClaimSpec:
+        storageClassName: block-encrypted-volumes
+        accessModes:
+          - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: 200Gi
+  backups:
+    pgbackrest:
+      manual:
+        repoName: repo2
+        options:
+          - --type=full
+      configuration:
+        - secret:
+            name: postgres-db-s3-credentials
+        - configMap:
+            name: pgbackrest-async-config
+      global:
+        repo1-retention-full: '2'
+        repo1-retention-diff: '12'
+        repo1-retention-full-type: count
+        repo1-s3-uri-style: path
+        repo1-path: /pgbackrest
+        repo1-bundle: "y"
+        repo1-bundle-limit: 10MiB
+        repo1-bundle-size: 100MiB
+        repo1-storage-verify-tls: "n"
+      repos:
+        - name: repo1
+          schedules:
+            full: "0 1 * * 0"
+            differential: "0 5 * * 1-6"
+          s3:
+            bucket: postgres
+            endpoint: https://minio.minio.svc.cluster.local:9000
+            region: eu-01
