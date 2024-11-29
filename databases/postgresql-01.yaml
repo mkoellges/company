@@ -4,7 +4,6 @@ metadata:
   name: postgresql-01
   namespace: databases
 spec:
-  image: registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi8-15.8-2
   shutdown: false
   standby:
     enabled: false
@@ -46,25 +45,15 @@ spec:
     dynamicConfiguration:
       postgresql:
         parameters:
-          effective_cache_size: 11GB
-          shared_buffers: 4GB
-          work_mem: 32MB
+          effective_cache_size: 64MB
+          shared_buffers: 64MB
+          work_mem: 16MB
           max_connections: 250
         pg_hba:
           - "hostssl all postgres 0.0.0.0/0 cert"
           - "hostssl all postgres ::/0 cert"
-          - "hostssl prod_billing_1 all all scram-sha-256"
-          - "hostssl prod_hrc_core_1 all all scram-sha-256"
-          - "hostssl prod_cds_1 all all scram-sha-256"
-          - "hostssl prod_als_1 all all scram-sha-256"
-          - "hostssl prod_els_1 all all scram-sha-256"
-          - "hostssl postgres all all scram-sha-256"
           - "host postgres readaccess all scram-sha-256"
   users:
-    - name: cgm-admin
-      options: SUPERUSER
-      password:
-        type: ASCII
     - name: she-admin
       options: SUPERUSER
       password:
@@ -83,33 +72,17 @@ spec:
                     values:
                       - master
               topologyKey: kubernetes.io/hostname
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: node-role.kubernetes.io/database
-                    operator: Exists
-      tolerations:
-        - effect: NoSchedule
-          key: dedicated
-          value: database
-          operator: Equal
-      resources:
-        requests:
-          memory: 12Gi
-        limits:
-          memory: 12Gi
       dataVolumeClaimSpec:
-        storageClassName: block-encrypted-volumes
+        storageClassName: standard
         accessModes:
           - "ReadWriteOnce"
         resources:
           requests:
-            storage: 200Gi
+            storage: 20Gi
   backups:
     pgbackrest:
       manual:
-        repoName: repo2
+        repoName: repo1
         options:
           - --type=full
       configuration:
@@ -118,6 +91,9 @@ spec:
         - configMap:
             name: pgbackrest-async-config
       global:
+        log-level-console: info
+        log-level-file: detail
+        log-level-stderr: info
         repo1-retention-full: '2'
         repo1-retention-diff: '12'
         repo1-retention-full-type: count
