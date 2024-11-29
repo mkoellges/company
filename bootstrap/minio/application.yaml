@@ -90,7 +90,7 @@ spec:
                 
         ingress:
           enabled: true
-          ingressClassName: internal-nginx
+          ingressClassName: nginx-internal
           tls: true
           selfSigned: false
           annotations:
@@ -111,7 +111,7 @@ spec:
             nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
             cert-manager.io/cluster-issuer: "letsencrypt-prod"
             nginx.ingress.kubernetes.io/client-body-buffer-size: "100M"
-          ingressClassName: nginx
+          ingressClassName: nginx-internal
           hostname: minio-api.koellgma.de
           
         persistence:
