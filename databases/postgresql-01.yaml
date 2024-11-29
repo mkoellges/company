@@ -21,16 +21,6 @@ spec:
           max_client_conn: '250'
           default_pool_size: '250'
           max_db_connections: '250'
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                  - key: postgres-operator.crunchydata.com/role
-                    operator: In
-                    values:
-                      - pgbouncer
-              topologyKey: kubernetes.io/hostname
   patroni:
     dynamicConfiguration:
       postgresql:
@@ -52,16 +42,6 @@ spec:
   instances:
     - name: cluster1
       replicas: 3
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                  - key: postgres-operator.crunchydata.com/role
-                    operator: In
-                    values:
-                      - master
-              topologyKey: kubernetes.io/hostname
       dataVolumeClaimSpec:
         storageClassName: standard
         accessModes:
