@@ -30,17 +30,6 @@ spec:
                     values:
                       - pgbouncer
               topologyKey: kubernetes.io/hostname
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: node-role.kubernetes.io/database
-                    operator: Exists
-      tolerations:
-        - effect: NoSchedule
-          key: dedicated
-          value: database
-          operator: Equal
   patroni:
     dynamicConfiguration:
       postgresql:
