@@ -1,0 +1,151 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: she-runtime
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://she-informationstechnologie.github.io/charts/
+    chart: she-runtime
+    targetRevision: 1.4.2
+    helm:
+      values: |
+        certManager:
+          namespace: cert-manager
+          name: cert-manager
+          enabled: true
+          source:
+            repoURL: https://charts.jetstack.io
+            targetRevision: v1.14.4
+            chart: cert-manager
+            helm:
+              releaseName: cert-manager
+              parameters:
+                - name: installCRDs
+                  value: 'true'
+
+        argoApp:
+          enabled: false
+
+        prometheusOperator:
+          prometheusNodeExporter:
+            hostNetwork: true
+            service:
+              port: 30001
+              targetPort: 30001
+          prometheus:
+            prometheusSpec:
+              externalLabels:
+                  cluster: dev-1
+              storageSpec:
+                volumeClaimTemplate:
+                  spec:
+                    storageClassName: standard
+                    accessModes: ["ReadWriteOnce"]
+                    resources:
+                      requests:
+                        storage: 50Gi
+          coreDns:
+            enabled: false
+            serviceMonitor:
+              enabled: false
+          kubeDns:
+            enabled: false
+            serviceMonitor:
+              enabled: false
+          kubeEtcd:
+            enabled: false
+            serviceMonitor:
+              enabled: false
+          kubeProxy:
+            enabled: false
+            serviceMonitor:
+              enabled: false
+          kubeScheduler:
+            enabled: false
+            serviceMonitor:
+              enabled: false
+          kubeControllerManager:
+            enable: false
+            serviceMonitor:
+              enabled: false
+          defaultRules:
+            rules:
+              etcd: false
+              kubeControllerManager: false
+              kubeProxy: false
+              kubeSchedulerAlerting: false
+          ingress:
+            baseUrl: koellgma.de
+
+        publicIngressController:
+          enabled: false
+
+        internalIngressController:
+          enabled: true
+          source:
+            helm:
+              values: |
+                controller:
+                  setAsDefaultIngress: "true"
+                  ingressClass: nginx-internal
+                  ingressClassResource:
+                    name: nginx-internal
+                  config:
+                    use-proxy-protocol: 'true'
+
+        postgresOperator:
+          enabled: true
+          source:
+            repoURL: https://github.com/SHE-Informationstechnologie/postgres-operator-examples.git
+            path: kustomize/install
+            targetRevision: v5.5.2-she-1
+
+        velero:
+          enabled: false
+
+        monitoringRules:
+          enabled: true
+          namespace: monitoring
+          name: monitoring-rules
+          source:
+            repoURL: https://she-informationstechnologie.github.io/charts/
+            chart: monitoring-rules
+            targetRevision: 3.0.0
+            helm:
+              values: |
+                prometheusLabels:
+                  kubernetes.she.net/prometheus-instance: default
+                postgres:
+                  enabled: true
+                  podMonitor: false
+                minio:
+                  enabled: true
+                  serviceMonitor:
+                    selector:
+                      matchLabels:
+                        app.kubernetes.io/name: minio
+                minioMirror:
+                  enabled: true
+
+        opensearchOperator:
+          enabled: true
+
+        taintController:
+          enabled: false
+
+        x509Exporter:
+          enabled: true
+
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
