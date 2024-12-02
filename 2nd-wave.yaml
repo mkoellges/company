@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: databases
+  name: bootstrap
   annotations:
     argocd.argoproj.io/sync-wave: "2"
   namespace: argocd
@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/mkoellges/company.git
     targetRevision: HEAD
-    path: databases
+    path: 2nd-wave
     directory:
       recurse: true
   destination:
