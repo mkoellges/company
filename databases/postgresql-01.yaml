@@ -51,6 +51,7 @@ spec:
             storage: 20Gi
   backups:
     pgbackrest:
+      image: registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi8-2.51
       manual:
         repoName: repo1
         options:
