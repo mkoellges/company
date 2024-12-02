@@ -91,14 +91,19 @@ spec:
               values: |
                 controller:
                   hostNetwork: true
-                  setAsDefaultIngress: "true"
-                  ingressClass: nginx-internal
-                  ingressClassResource:
-                    name: nginx-internal
-                  config:
-                    use-proxy-protocol: 'true'
-                nodeSelector:
-                  ingress: worker
+                  hostPort:
+                    enabled: true
+                    ports:
+                      http: 80
+                      https: 443
+                  replicaCount: 1
+                  metrics:
+                    enabled: true
+                    service:
+                      annotations:
+                        ingressClassName: nginx
+                  nodeSelector:
+                    ingress: worker
 
         postgresOperator:
           enabled: true
