@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: bootstrap
+  name: 3rd-wave
   annotations:
     argocd.argoproj.io/sync-wave: "3"
   namespace: argocd
