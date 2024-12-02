@@ -90,6 +90,7 @@ spec:
             helm:
               values: |
                 controller:
+                  hostNetwork: true
                   setAsDefaultIngress: "true"
                   ingressClass: nginx-internal
                   ingressClassResource:
