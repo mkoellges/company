@@ -96,6 +96,8 @@ spec:
                     name: nginx-internal
                   config:
                     use-proxy-protocol: 'true'
+                nodeSelector:
+                  ingress: worker
 
         postgresOperator:
           enabled: true
