@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/mkoellges/company.git
     targetRevision: HEAD
-    path: 3nd-wave
+    path: 3rd-wave
     directory:
       recurse: true
   destination:
