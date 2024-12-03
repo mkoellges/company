@@ -5,6 +5,9 @@ metadata:
   namespace:  argocd
 spec:
   project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: logging
   source:
     repoURL: https://she-informationstechnologie.github.io/charts/
     chart: logging-opensearch
@@ -15,7 +18,6 @@ spec:
           settings:
             nodePools:
               - component: nodes
-                jvm: -Xmx4096m -Xms4096m
                 replicas: 3
                 diskSize: "2Gi"
                 persistence:
@@ -31,20 +33,17 @@ spec:
                 pdb:
                   enable: true
                   maxUnavailable: 1
-          ingress:
-            enabled: true
-            className: "nginx-internal"
-            hosts:
-              - host: opensearch.koellgma.de
-                paths:
-                  - path: /
-                    pathType: ImplementationSpecific
-            tls:
-              - hosts:
-                  - opensearch.koellgma.de
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: logging
+          # ingress:
+          #   enabled: true
+          #   className: "nginx-internal"
+          #   hosts:
+          #     - host: opensearch.koellgma.de
+          #       paths:
+          #         - path: /
+          #           pathType: ImplementationSpecific
+          #   tls:
+          #     - hosts:
+          #         - opensearch.koellgma.de
   syncPolicy:
     automated:
       prune: true
