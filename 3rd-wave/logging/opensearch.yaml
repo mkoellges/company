@@ -15,11 +15,18 @@ spec:
     helm:
       values: |
         opensearch:
+          enabled: true
           settings:
+            security:
+              tls:
+                http:
+                  generate: true
+                  secret:
+                    name: opensearch-tls
             nodePools:
               - component: nodes
                 replicas: 3
-                diskSize: "2Gi"
+                diskSize: "5Gi"
                 persistence:
                   pvc:
                     accessModes:
@@ -33,17 +40,23 @@ spec:
                 pdb:
                   enable: true
                   maxUnavailable: 1
-          # ingress:
-          #   enabled: true
-          #   className: "nginx-internal"
-          #   hosts:
-          #     - host: opensearch.koellgma.de
-          #       paths:
-          #         - path: /
-          #           pathType: ImplementationSpecific
-          #   tls:
-          #     - hosts:
-          #         - opensearch.koellgma.de
+          ingress:
+            enabled: true
+            className: "nginx-internal"
+            annotations:
+              nginx.ingress.kubernetes.io/proxy-body-size: "0"
+              nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+              nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+              cert-manager.io/cluster-issuer: "letsencrypt-prod"
+
+            hosts:
+              - host: opensearch.koellgma.de
+                paths:
+                  - path: /
+                    pathType: ImplementationSpecific
+            tls:
+              - hosts:
+                  - opensearch.koellgma.de
   syncPolicy:
     automated:
       prune: true
