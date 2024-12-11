@@ -26,6 +26,8 @@ spec:
                 ingressClassName: nginx-internal
           ingressClassResource:
             name: nginx-internal
+            enabled: true
+            default: true
           nodeSelector:
             ingress: worker
   destination:
