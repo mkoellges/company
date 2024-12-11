@@ -28,7 +28,7 @@ spec:
             ingress: worker
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: ingress-nginx
+    namespace: internal-ingress
   syncPolicy:
     automated:
       prune: true
