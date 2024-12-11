@@ -78,8 +78,6 @@ spec:
               kubeSchedulerAlerting: false
           ingress:
             baseUrl: koellgma.de
-            annotations:
-              kubernetes.io/ingress.class: "nginx-internal"
 
         publicIngressController:
           enabled: false
