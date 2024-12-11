@@ -24,6 +24,8 @@ spec:
             service:
               annotations:
                 ingressClassName: nginx-internal
+          ingressClassResource:
+            name: nginx-internal
           nodeSelector:
             ingress: worker
   destination:
