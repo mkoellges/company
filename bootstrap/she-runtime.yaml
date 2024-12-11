@@ -114,7 +114,20 @@ spec:
             targetRevision: v5.5.2-she-1
 
         velero:
-          enabled: false
+          source:
+            helm:
+              values: |
+                nodeAgent:
+                  tolerations:
+                    - effect: NoSchedule
+                      key: dedicated
+                      operator: Exists
+                metrics:
+                  serviceMonitor:
+                    enabled: true
+                    namespace: monitoring
+                    additionalLabels:
+                      kubernetes.she.net/prometheus-instance: default
 
         monitoringRules:
           enabled: true
