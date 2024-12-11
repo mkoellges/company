@@ -117,11 +117,6 @@ spec:
           source:
             helm:
               values: |
-                nodeAgent:
-                  tolerations:
-                    - effect: NoSchedule
-                      key: dedicated
-                      operator: Exists
                 metrics:
                   serviceMonitor:
                     enabled: true
@@ -136,7 +131,7 @@ spec:
           source:
             repoURL: https://she-informationstechnologie.github.io/charts/
             chart: monitoring-rules
-            targetRevision: 3.0.0
+            targetRevision: 3.0.2
             helm:
               values: |
                 prometheusLabels:
