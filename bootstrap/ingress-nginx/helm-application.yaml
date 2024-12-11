@@ -21,9 +21,6 @@ spec:
           replicaCount: 1
           metrics:
             enabled: true
-            service:
-              annotations:
-                ingressClassName: nginx-internal
           ingressClassResource:
             name: nginx-internal
             enabled: true
