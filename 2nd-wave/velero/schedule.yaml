@@ -15,7 +15,7 @@ spec:
       - '*'
     excludedNamespaces:
       - kube-system
-      - she-vendor # exclude databases
+      - databases # exclude databases
     storageLocation: default
     volumeSnapshotLocations:
       - default
@@ -38,7 +38,7 @@ spec:
       - '*'
     excludedNamespaces:
       - kube-system
-      - she-vendor # exclude databases
+      - databases # exclude databases
     storageLocation: default
     volumeSnapshotLocations:
       - default
@@ -61,7 +61,7 @@ spec:
       - '*'
     excludedNamespaces:
       - kube-system
-      - she-vendor # exclude databases
+      - databases # exclude databases
     storageLocation: default
     volumeSnapshotLocations:
       - default
@@ -74,7 +74,7 @@ metadata:
   name: annually
   namespace: velero
 spec:
-  schedule: 12 * * * *
+  schedule: 0 7 1 1 *
   template:
     metadata:
       labels: {}
