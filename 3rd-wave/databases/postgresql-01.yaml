@@ -8,7 +8,7 @@ spec:
   shutdown: false
   standby:
     enabled: false
-    repoName: repo1
+    repoName: repo2
   monitoring:
     pgmonitor:
       exporter:
