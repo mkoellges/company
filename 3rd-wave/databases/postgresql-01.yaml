@@ -52,7 +52,7 @@ spec:
   backups:
     pgbackrest:
       manual:
-        repoName: repo1
+        repoName: repo2
         options:
           - --type=full
       configuration:
@@ -65,15 +65,15 @@ spec:
         log-level-file: detail
         log-level-stderr: info
 
-        repo1-retention-full: '2'
-        repo1-retention-diff: '12'
-        repo1-retention-full-type: count
-        repo1-s3-uri-style: path
-        repo1-path: /pgbackrest
-        repo1-bundle: "y"
-        repo1-bundle-limit: 10MiB
-        repo1-bundle-size: 100MiB
-        repo1-storage-verify-tls: "n"
+#        repo1-retention-full: '2'
+#        repo1-retention-diff: '12'
+#        repo1-retention-full-type: count
+#        repo1-s3-uri-style: path
+#        repo1-path: /pgbackrest
+#        repo1-bundle: "y"
+#        repo1-bundle-limit: 10MiB
+#        repo1-bundle-size: 100MiB
+#        repo1-storage-verify-tls: "n"
         # repo1-host: ""  # Prevent writing to repo1 completely
 
         repo2-retention-full: '2'
@@ -88,14 +88,14 @@ spec:
         # repo2-host: ""  # Prevent writing to repo1 completely
 
       repos:
-        - name: repo1
-          schedules:
-            full: "0 1 * * 0"
-            differential: "0 5 * * 1-6"
-          s3:
-            bucket: postgres
-            endpoint: https://minio.minio.svc.cluster.local:9000
-            region: eu-01
+#        - name: repo1
+#          schedules:
+#            full: "0 1 * * 0"
+#            differential: "0 5 * * 1-6"
+#          s3:
+#            bucket: postgres
+#            endpoint: https://minio.minio.svc.cluster.local:9000
+#            region: eu-01
         - name: repo2
           schedules:
             full: "0 12 * * 0"
