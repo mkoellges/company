@@ -42,11 +42,13 @@ spec:
               statements:
                 - resources:
                     - "arn:aws:s3:::postgres"
+                    - "arn:aws:s3:::postgres-2"
                   effect: "Allow"
                   actions:
                     - "s3:ListBucket"
                 - resources:
                     - "arn:aws:s3:::postgres/*"
+                    - "arn:aws:s3:::postgres-2/*"
                   effect: "Allow"
                   actions:
                     - "s3:PutObject"
@@ -74,6 +76,13 @@ spec:
             
           buckets:
             - name: postgres
+              region: eu-01
+              versioning: false
+              withLock: true
+              quota:
+                type: set
+                size: 10GiB
+            - name: postgres-2
               region: eu-01
               versioning: false
               withLock: true
