@@ -73,6 +73,8 @@ spec:
         repo1-bundle-limit: 10MiB
         repo1-bundle-size: 100MiB
         repo1-storage-verify-tls: "n"
+        repo1-type: backup  # Prevent WAL archiving
+        repo1-host: ""  # Prevent writing to repo1 completely
       repos:
         - name: repo1
           schedules:
