@@ -74,7 +74,7 @@ spec:
         repo1-bundle-size: 100MiB
         repo1-storage-verify-tls: "n"
         repo1-type: both  # Prevent WAL archiving
-        repo1-host: ""  # Prevent writing to repo1 completely
+        # repo1-host: ""  # Prevent writing to repo1 completely
       repos:
         - name: repo1
           schedules:
