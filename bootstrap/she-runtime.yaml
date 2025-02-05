@@ -6,9 +6,6 @@ metadata:
 spec:
   project: default
   source:
-#    repoURL: https://she-informationstechnologie.github.io/charts/
-#    chart: she-runtime
-#    targetRevision: 1.4.2
     repoURL: https://github.com/SHE-Informationstechnologie/charts.git
     targetRevision: fix/version-1-4-3
     path: charts/she-runtime
@@ -46,7 +43,7 @@ spec:
             ingress:
               enabled: true
               hosts:
-                - koellgma.de
+                - aleertmanager.koellgma.de
               annotations: {}
             alertmanagerSpec:
               storage: {}
@@ -55,7 +52,7 @@ spec:
             ingress:
               enabled: true
               hosts:
-                - koellgma.de
+                - grafana.koellgma.de
               annotations: {}
           prometheus:
             enabled: true
@@ -63,7 +60,7 @@ spec:
               enabled: true
             ingress:
               enabled: true
-              baseUrl: koellgma.de
+              hosts: prometheus.koellgma.de
               annotations: {}
             prometheusSpec:
               externalLabels:
