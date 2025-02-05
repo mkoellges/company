@@ -11,7 +11,7 @@ spec:
 #    targetRevision: 1.4.2
     repoURL: https://github.com/SHE-Informationstechnologie/charts.git
     targetRevision: fix/version-1-4-3
-    path: chart/she-runtime
+    path: charts/she-runtime
     helm:
       values: |
         certManager:
