@@ -60,7 +60,8 @@ spec:
               enabled: true
             ingress:
               enabled: true
-              hosts: prometheus.koellgma.de
+              hosts: 
+                - prometheus.koellgma.de
               annotations: {}
             prometheusSpec:
               externalLabels:
