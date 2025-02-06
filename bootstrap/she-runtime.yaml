@@ -43,7 +43,7 @@ spec:
             ingress:
               enabled: true
               hosts:
-                - aleertmanager.koellgma.de
+                - alertmanager.koellgma.de
               annotations: {}
             alertmanagerSpec:
               storage: {}
