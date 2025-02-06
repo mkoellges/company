@@ -112,10 +112,6 @@ spec:
 
         postgresOperator:
           enabled: true
-          source:
-            repoURL: https://github.com/SHE-Informationstechnologie/postgres-operator-examples.git
-            path: kustomize/install
-            targetRevision: v5.5.2-she-1
 
         velero:
           source:
