@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: privileged-container
-        image: sheitag/node-executor:1.0
+        image: sheitag/node-executor:1.1
         securityContext:
           privileged: true
         envFrom:
