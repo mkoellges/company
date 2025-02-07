@@ -1,0 +1,52 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: privileged-daemonset
+  namespace: node-executor
+  labels:
+    app: node-executor
+    type: privileged-app
+    purpose: node-setup
+spec:
+  selector:
+    matchLabels:
+      app: privileged-app
+  template:
+    metadata:
+      labels:
+        app: privileged-app
+    spec:
+      containers:
+      - name: privileged-container
+        image: sheitag/node-executor:1.0
+        securityContext:
+          privileged: true
+        envFrom:
+          - configMapRef:
+              name: modify-config
+        volumeMounts:
+          - name: host
+            mountPath: /host
+          - name: scripts-volume
+            mountPath: /scripts/modify.sh
+            subPath: modify.sh
+      priorityClassName: high-priority
+      hostPID: true
+      volumes:
+      - name: host
+        hostPath:
+          path: /
+      - name: scripts-volume
+        configMap:
+          name: modify-config
+          defaultMode: 0777
+      tolerations:
+        - key: "dedicated"
+          operator: "Equal"
+          value: "database"
+          effect: "NoSchedule"
+        - key: "dedicated"
+          operator: "Equal"
+          value: "application"
+          effect: "NoSchedule"

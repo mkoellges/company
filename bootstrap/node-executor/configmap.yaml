@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: modify-config
+  namespace: node-executor
+data:
+  modify.sh: |
+    #!/bin/env bash
+    
+    cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
+    unset MODIFIED
+    
+    if grep -Fxq "Ciphers aes256-ctr,aes192-ctr" /etc/ssh/sshd_config
+    then
+      echo "Ciphers are already set up properly, skipping"
+    else
+      sed -e 's/^Ciphers/#&/' -i /etc/ssh/sshd_config
+      echo "Ciphers aes256-ctr,aes192-ctr" >> /etc/ssh/sshd_config
+      MODIFIED=1
+    fi
+    
+    if grep -Fxq "MACs hmac-sha2-512, hmac-sha2-256" /etc/ssh/sshd_config
+    then
+      echo "MACs are already set up properly, skipping"
+    else
+      sed -e 's/^MACs/#&/' -i /etc/ssh/sshd_config
+      echo "MACs hmac-sha2-512, hmac-sha2-256" >> /etc/ssh/sshd_config
+      MODIFIED=1
+    fi
+    
+    if grep -Fxq "KexAlgorithms diffie-hellman-group-exchange-sha256" /etc/ssh/sshd_config
+    then
+      echo "KexAlgorithms are already set up properly, skipping"
+    else
+      sed -e 's/^KexAlgorithms/#&/' -i /etc/ssh/sshd_config
+      echo "KexAlgorithms diffie-hellman-group-exchange-sha256" >> /etc/ssh/sshd_config
+      MODIFIED=1
+    fi
+    
+    if grep -Fxq "HostKeyAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521" /etc/ssh/sshd_config
+    then
+      echo "HostKeyAlgorithms are already set up properly, skipping"
+    else
+      sed -e 's/^HostKeyAlgorithms/#&/' -i /etc/ssh/sshd_config
+      echo "HostKeyAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521" >> /etc/ssh/sshd_config
+      MODIFIED=1
+    fi
+    
+    if grep -Fxq "MaxAuthTries 3" /etc/ssh/sshd_config
+    then
+      echo "MaxAuthTries are already set up properly, skipping"
+    else
+      sed -e 's/^MaxAuthTries/#&/' -i /etc/ssh/sshd_config
+      echo "MaxAuthTries 3" >> /etc/ssh/sshd_config
+      MODIFIED=1
+    fi
+    
+    if [ -z ${MODIFIED+x} ]
+    then
+      echo "'/etc/ssh/sshd_config' was not modified, no restart needed"
+    else
+      systemctl restart ssh
+      echo "SSH service restarted"
+    fi
+    
+    echo "Modifications finished successfully."
+    
+    exit 0
