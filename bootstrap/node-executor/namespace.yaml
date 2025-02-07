@@ -1,0 +1,4 @@
+k8sapiVersion: v1
+kind: Namespace
+metadata:
+  name: node-executor
