@@ -4,7 +4,7 @@ metadata:
   name: modify-config
   namespace: node-executor
 data:
-  modify.sh: |
+  execute.sh: |
     #!/bin/env bash
     
     cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak

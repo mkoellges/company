@@ -29,8 +29,8 @@ spec:
           - name: host
             mountPath: /host
           - name: scripts-volume
-            mountPath: /scripts/modify.sh
-            subPath: modify.sh
+            mountPath: /scripts/execute.sh
+            subPath: execute.sh
       priorityClassName: high-priority
       hostPID: true
       volumes:
