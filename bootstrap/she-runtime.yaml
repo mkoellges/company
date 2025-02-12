@@ -32,7 +32,7 @@ spec:
           commonLabels: 
             kubernetes.she.net/prometheus-instance: default
           prometheusOperator: 
-            hostNetwork: true
+            hostNetwork: false
           prometheusNodeExporter:
             hostNetwork: true
             service:
