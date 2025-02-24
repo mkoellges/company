@@ -108,7 +108,7 @@ spec:
             nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
             cert-manager.io/cluster-issuer: "letsencrypt-prod"
             nginx.ingress.kubernetes.io/client-body-buffer-size: "100M"
-          hostname: minio.koellgma.de
+          hostname: minio.example.com
           
         apiIngress:
           enabled: true
@@ -121,7 +121,7 @@ spec:
             cert-manager.io/cluster-issuer: "letsencrypt-prod"
             nginx.ingress.kubernetes.io/client-body-buffer-size: "100M"
           ingressClassName: nginx-internal
-          hostname: minio-api.koellgma.de
+          hostname: minio-api.example.com
           
         persistence:
           enabled: true

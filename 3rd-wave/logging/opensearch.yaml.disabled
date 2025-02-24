@@ -50,13 +50,13 @@ spec:
               cert-manager.io/cluster-issuer: "letsencrypt-prod"
 
             hosts:
-              - host: opensearch.koellgma.de
+              - host: opensearch.example.com
                 paths:
                   - path: /
                     pathType: ImplementationSpecific
             tls:
               - hosts:
-                  - opensearch.koellgma.de
+                  - opensearch.example.com
   syncPolicy:
     automated:
       prune: true

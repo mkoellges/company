@@ -43,7 +43,7 @@ spec:
             ingress:
               enabled: true
               hosts:
-                - alertmanager.koellgma.de
+                - alertmanager.example.com
               annotations: {}
             alertmanagerSpec:
               storage: {}
@@ -52,7 +52,7 @@ spec:
             ingress:
               enabled: true
               hosts:
-                - grafana.koellgma.de
+                - grafana.example.com
               annotations: {}
           prometheus:
             enabled: true
@@ -61,7 +61,7 @@ spec:
             ingress:
               enabled: true
               hosts: 
-                - prometheus.koellgma.de
+                - prometheus.example.com
               annotations: {}
             prometheusSpec:
               externalLabels:
