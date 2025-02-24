@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/mkoellges/company.git
     targetRevision: HEAD
-    path: dashboards
+    path: dashboards/
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
