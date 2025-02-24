@@ -16,8 +16,3 @@ spec:
     automated:
       prune: true
       selfHeal: true
-  syncOptions:
-    - CreateNamespace=true
-    - Validate=true
-    - PrunePropagationPolicy=foreground
-    - PruneLast=true
