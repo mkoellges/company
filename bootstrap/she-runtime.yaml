@@ -83,17 +83,6 @@ spec:
                   idle_conn_timeout_seconds: 300
                 date_formats:
                   use_browser_locale: true
-              sidecar:
-                dashboards:
-                  enabled: true
-                  SCProvider: true
-                  folderAnnotation: k8s-sidecar-target-directory
-                  label: grafana_dashboard
-                  labelValue: "1"
-                  searchNamespace: "ALL"
-                  provider:
-                    allowUiUpdates: true
-                    foldersFromFilesStructure: true
 
           prometheus:
             enabled: true
