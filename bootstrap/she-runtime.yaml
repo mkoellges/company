@@ -53,7 +53,48 @@ spec:
               enabled: true
               hosts:
                 - grafana.example.com
-              annotations: {}
+              grafana.ini:
+                log:
+                  mode: console
+                server:
+                  domain: grafana.example.com
+                  root_url: https://grafana.ops.clickdocsdev.net
+                auth:
+                  login_cookie_name: grafana_session
+                auth.basic:
+                  enabled: true
+                auth.anonymous:
+                  enabled: true
+                analytics:
+                  check_for_updates: false
+                  reporting_enabled: false
+                security:
+                  cookie_secure: true
+                  disable_gravatar: true
+                  login_remember_days: 3
+                  allow_embedding: true
+                users:
+                  default_theme: dark
+                  auto_assign_org: true
+                  auto_assign_org_role: Editor
+                dataproxy:
+                  timeout: 180
+                  keep_alive_seconds: 180
+                  idle_conn_timeout_seconds: 300
+                date_formats:
+                  use_browser_locale: true
+              sidecar:
+                dashboards:
+                  enabled: true
+                  SCProvider: true
+                  folderAnnotation: k8s-sidecar-target-directory
+                  label: grafana_dashboard
+                  labelValue: "1"
+                  searchNamespace: "ALL"
+                  provider:
+                    allowUiUpdates: true
+                    foldersFromFilesStructure: true
+
           prometheus:
             enabled: true
             crunchyPostgresExporter:
