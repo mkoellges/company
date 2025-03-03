@@ -1,7 +1,0 @@
-apiVersion: v2
-name: dashboards
-appVersion: "1.0"
-description: A Helm chart for Dashboards
-version: 1.0.0
-type: application
-icon: https://icon-icons.com/icon/file-type-helm/130546

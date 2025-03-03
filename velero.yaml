@@ -1,21 +1,19 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: 3rd-wave
-  annotations:
-    argocd.argoproj.io/sync-wave: "3"
+  name: velero
+#   annotations:
+#     argocd.argoproj.io/sync-wave: "1"
   namespace: argocd
 spec:
   project: default
   source:
-    repoURL: https://github.com/mkoellges/company.git
-    targetRevision: HEAD
-    path: 3rd-wave
-    directory:
-      recurse: true
+    repoURL: https://gitlab.com/she-ag/tools/kind/k8s-deployments.git
+    targetRevision: manni
+    path: velero
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: velero
   syncPolicy:
     automated:
       prune: true

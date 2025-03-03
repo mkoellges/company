@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/SHE-Informationstechnologie/charts.git
-    targetRevision: fix/version-1-4-3
-    path: charts/she-runtime
+    repoURL: https://she-informationstechnologie.github.io/charts/
+    chart: she-runtime
+    targetRevision: 1.4.2
     helm:
       values: |
         certManager:
@@ -17,7 +17,7 @@ spec:
           enabled: true
           source:
             repoURL: https://charts.jetstack.io
-            targetRevision: v1.14.4
+            targetRevision: v1.14.1
             chart: cert-manager
             helm:
               releaseName: cert-manager
@@ -25,77 +25,28 @@ spec:
                 - name: installCRDs
                   value: 'true'
 
+        # argo:
+        #   targetCluster: in-cluster
+        #   project: default
+
         argoApp:
           enabled: false
+          source:
+            helm:
+              values: |
+                server:
+                  extraArgs: [--insecure]
+                  ingress:
+                    hostname: "argocd.customer.she-test.com"
+                    tls: true
 
         prometheusOperator:
-          commonLabels: 
-            kubernetes.she.net/prometheus-instance: default
-          prometheusOperator: 
-            hostNetwork: false
           prometheusNodeExporter:
             hostNetwork: true
-            service:
-              port: 30001
-              targetPort: 30001
-          alertmanager:
-            enabled: true
-            ingress:
-              enabled: true
-              hosts:
-                - alertmanager.example.com
-              annotations: {}
-            alertmanagerSpec:
-              storage: {}
-          grafana:
-            enabled: true
-            ingress:
-              enabled: true
-              hosts:
-                - grafana.example.com
-              grafana.ini:
-                log:
-                  mode: console
-                server:
-                  domain: grafana.example.com
-                  root_url: https://grafana.ops.clickdocsdev.net
-                auth:
-                  login_cookie_name: grafana_session
-                auth.basic:
-                  enabled: true
-                auth.anonymous:
-                  enabled: true
-                analytics:
-                  check_for_updates: false
-                  reporting_enabled: false
-                security:
-                  cookie_secure: true
-                  disable_gravatar: true
-                  login_remember_days: 3
-                  allow_embedding: true
-                users:
-                  default_theme: dark
-                  auto_assign_org: true
-                  auto_assign_org_role: Editor
-                dataproxy:
-                  timeout: 180
-                  keep_alive_seconds: 180
-                  idle_conn_timeout_seconds: 300
-                date_formats:
-                  use_browser_locale: true
-
           prometheus:
-            enabled: true
-            crunchyPostgresExporter:
-              enabled: true
-            ingress:
-              enabled: true
-              hosts: 
-                - prometheus.example.com
-              annotations: {}
             prometheusSpec:
               externalLabels:
-                  cluster: dev-1
+                k8s_cluster: dev-1
               storageSpec:
                 volumeClaimTemplate:
                   spec:
@@ -103,7 +54,17 @@ spec:
                     accessModes: ["ReadWriteOnce"]
                     resources:
                       requests:
-                        storage: 50Gi
+                        storage: 5Gi
+          alertmanager:
+            alertmanagerSpec:
+              storage:
+                volumeClaimTemplate:
+                  spec:
+                    storageClassName: standard
+                    accessModes: ["ReadWriteOnce"]
+                    resources:
+                      requests:
+                        storage: 1Gi
           coreDns:
             enabled: false
             serviceMonitor:
@@ -134,31 +95,21 @@ spec:
               kubeControllerManager: false
               kubeProxy: false
               kubeSchedulerAlerting: false
+          ingress:
+            baseUrl: she-test.com
 
         publicIngressController:
           enabled: false
 
         internalIngressController:
-          namespace: internal-ingress
-          name: internal-ingress
           enabled: true
-          source:
-            repoURL: https://kubernetes.github.io/ingress-nginx
-            targetRevision: 4.10.0
-            chart: ingress-nginx
-            helm:
-              parameters:
-                - name: controller.ingressClass
-                  value: nginx-internal
-                - name: controller.watchIngressWithoutClass
-                  value: 'true'
-                - name: controller.ingressClassResource.name
-                  value: nginx-internal
-                - name: controller.ingressClassResource.default
-                  value: 'true'
 
         postgresOperator:
           enabled: true
+          source:
+            repoURL: https://github.com/SHE-Informationstechnologie/postgres-operator-examples.git
+            path: kustomize/install
+            targetRevision: v5.5.2-she-1
 
         velero:
           source:
@@ -166,17 +117,60 @@ spec:
               values: |
                 initContainers:
                   - name: velero-plugin-for-aws
-                    image: velero/velero-plugin-for-aws:v1.8.1
+                    image: velero/velero-plugin-for-aws:v1.9.0
                     imagePullPolicy: IfNotPresent
                     volumeMounts:
-                    - mountPath: /target
-                      name: plugins
+                      - mountPath: /target
+                        name: plugins
+                nodeAgent:
+                  tolerations:
+                    - effect: NoSchedule
+                      key: dedicated
+                      operator: Exists
                 metrics:
                   serviceMonitor:
                     enabled: true
                     namespace: monitoring
                     additionalLabels:
                       kubernetes.she.net/prometheus-instance: default
+
+        kyverno:
+          enabled: false
+          source:
+            helm:
+              values: |
+                admissionController:
+                  tolerations:
+                    - key: node-role.kubernetes.io/control-plane
+                      operator: Exists
+                  nodeSelector:
+                    node-role.kubernetes.io/control-plane: ""
+
+        kyvernoPolicies:
+          enabled: false
+
+        sealedSecrets:
+          source:
+            helm:
+              values: |
+                commandArgs:
+                  - --key-renew-period=0
+
+        metrics:
+          namespace: kube-system
+          name: metrics
+          enabled: true
+          source:
+            repoURL: https://kubernetes-sigs.github.io/metrics-server
+            chart: metrics-server
+            helm:
+              values: |
+                defaultArgs:
+                  - --cert-dir=/tmp
+                  - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+                  - --kubelet-use-node-status-port
+                  - --metric-resolution=15s
+                  - --kubelet-insecure-tls
 
         monitoringRules:
           enabled: true
@@ -204,9 +198,6 @@ spec:
 
         opensearchOperator:
           enabled: true
-
-        taintController:
-          enabled: false
 
         x509Exporter:
           enabled: true

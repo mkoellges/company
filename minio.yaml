@@ -2,11 +2,11 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: minio
+  namespace: argocd
+#   annotations:
+#     argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
-  destination:
-    server: "https://kubernetes.default.svc"
-    namespace: minio
   source:
     repoURL: https://charts.bitnami.com/bitnami
     chart: minio
@@ -108,7 +108,7 @@ spec:
             nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
             cert-manager.io/cluster-issuer: "letsencrypt-prod"
             nginx.ingress.kubernetes.io/client-body-buffer-size: "100M"
-          hostname: minio.example.com
+          hostname: minio.she-test.com
           
         apiIngress:
           enabled: true
@@ -121,7 +121,7 @@ spec:
             cert-manager.io/cluster-issuer: "letsencrypt-prod"
             nginx.ingress.kubernetes.io/client-body-buffer-size: "100M"
           ingressClassName: nginx-internal
-          hostname: minio-api.example.com
+          hostname: minio-api.she-test.com
           
         persistence:
           enabled: true
@@ -159,8 +159,11 @@ spec:
                       description: "Disks(s) in cluster {{ $labels.instance }} offline for more than 5 minutes"
   syncPolicy:
     automated:
-      prune: true
       allowEmpty: true
       selfHeal: true
+      prune: true
     syncOptions:
       - CreateNamespace=true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: minio

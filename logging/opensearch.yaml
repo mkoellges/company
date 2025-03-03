@@ -133,16 +133,15 @@ spec:
               nginx.ingress.kubernetes.io/proxy-body-size: "0"
               nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
               nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-              cert-manager.io/cluster-issuer: "letsencrypt-prod"
 
             hosts:
-              - host: opensearch.example.com
+              - host: opensearch.she-test.com
                 paths:
                   - path: /
                     pathType: ImplementationSpecific
             tls:
               - hosts:
-                  - opensearch.example.com
+                  - opensearch.she-test.com
   syncPolicy:
     automated:
       prune: true

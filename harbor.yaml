@@ -1,0 +1,67 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: harbor
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: "https://helm.goharbor.io"
+    chart: harbor
+    targetRevision: "1.14.0"
+    helm:
+      values: |
+        expose:
+          type: ingress
+          tls:
+            enabled: true
+            certSource: auto
+            auto:
+              commonName: "harbor.she-test.com"
+          ingress:
+            hosts:
+              core: harbor.she-test.com
+              notary: notary.harbor.she-test.com
+            ingressClassName: internal-ingress
+            annotations:
+              nginx.ingress.kubernetes.io/proxy-body-size: "0"
+              nginx.ingress.kubernetes.io/ssl-redirect: "true"
+              nginx.ingress.kubernetes.io/use-regex: "true"
+
+        externalURL: "https://harbor.she-test.com"
+
+        database:
+          type: external
+          external:
+            host: postgreql-01-ha.databases.svc.cluster.local
+            port: 5432
+            username: postgres
+            password: "postgres"
+            sslmode: "require"
+
+        redis:
+          type: internal
+
+        persistence:
+          enabled: true
+          persistentVolumeClaim:
+            registry:
+              storageClass: standard
+              size: 50Gi
+            chartmuseum:
+              storageClass: standard
+              size: 1Gi
+            jobservice:
+              storageClass: standard
+              size: 1Gi
+
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: harbor
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

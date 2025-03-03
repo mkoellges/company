@@ -1,21 +1,19 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: 2nd-wave
-  annotations:
-    argocd.argoproj.io/sync-wave: "2"
+  name: logging
+#   annotations:
+#     argocd.argoproj.io/sync-wave: "1"
   namespace: argocd
 spec:
   project: default
   source:
-    repoURL: https://github.com/mkoellges/company.git
-    targetRevision: HEAD
-    path: 2nd-wave
-    directory:
-      recurse: true
+    repoURL: https://gitlab.com/she-ag/tools/kind/k8s-deployments.git
+    targetRevision: manni
+    path: logging
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: logging
   syncPolicy:
     automated:
       prune: true
