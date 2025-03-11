@@ -1,0 +1,30 @@
+---
+apiVersion: opensearch.opster.io/v1
+kind: OpensearchUser
+metadata:
+  name: devops
+  namespace: logging
+spec:
+  opensearchCluster:
+    name: opensearch-cluster
+  passwordFrom:
+    name: devops-user-password
+    key: password
+  backendRoles:
+    - devops
+    - kibana_user
+    - kibana_read_only
+
+---
+apiVersion: opensearch.opster.io/v1
+kind: OpensearchUserRoleBinding
+metadata:
+  name: devops
+  namespace: logging
+spec:
+  opensearchCluster:
+    name: opensearch-cluster
+  roles:
+  - devops
+  users:
+  - devops

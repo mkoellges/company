@@ -1,0 +1,18 @@
+apiVersion: opensearch.opster.io/v1
+kind: OpensearchIndexTemplate
+metadata:
+  name: container
+spec:
+  indexPatterns:
+    - container-*
+  opensearchCluster:
+    name: opensearch-cluster
+  dataStream:
+    timestamp_field:
+      name: "@timestamp"
+  template:
+    settings:
+      index:
+        opendistro:
+          index_state_management:
+            policy_id: "30-days-delete-policy" 

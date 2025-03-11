@@ -1,0 +1,25 @@
+apiVersion: opensearch.opster.io/v1
+kind: OpensearchRole
+metadata:
+  name: devops
+  namespace: logging
+spec:
+  opensearchCluster:
+    name: opensearch-cluster
+  clusterPermissions:
+    - cluster_composite_ops_ro
+  indexPermissions:
+    - allowedActions:
+        - read
+      indexPatterns:
+        # Access to .kibana* is required for some Dashboard functionality.
+        - .kibana*
+        # You might want to cross check these with what is defined in the fluentbit role
+        - audit-*
+        - container-*
+        - access-*
+  tenantPermissions:
+    - allowedActions:
+        - kibana_all_read
+      tenantPatterns:
+        - global_tenant

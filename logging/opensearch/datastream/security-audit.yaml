@@ -1,0 +1,18 @@
+apiVersion: opensearch.opster.io/v1
+kind: OpensearchIndexTemplate
+metadata:
+  name: security-audit
+spec:
+  indexPatterns:
+    - audit-*
+  opensearchCluster:
+    name: opensearch-cluster
+  dataStream:
+    timestamp_field:
+      name: "@timestamp"
+  template:
+    settings:
+      index:
+        opendistro:
+          index_state_management:
+            policy_id: "365-days-delete-policy" 

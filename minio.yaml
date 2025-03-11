@@ -70,10 +70,24 @@ spec:
                     - "s3:PutObjectTagging"
                     - "s3:GetObject"
                     - "s3:DeleteObject"
+            - name: opensearch
+              statements:
+                - resources:
+                    - "arn:aws:s3:::opensearch"
+                  effect: "Allow"
+                  actions:
+                    - "s3:ListBucket"
+                - resources:
+                    - "arn:aws:s3:::opensearch/*"
+                  effect: "Allow"
+                  actions:
+                    - "s3:PutObject"
+                    - "s3:PutObjectTagging"
+                    - "s3:GetObject"
+                    - "s3:DeleteObject"
                     
           usersExistingSecrets:
             - centralized-minio-users
-            
           buckets:
             - name: postgres
               region: eu-01
@@ -96,7 +110,13 @@ spec:
               quota:
                 type: set
                 size: 1GiB
-                
+            - name: opensearch
+              region: eu-01
+              versioning: false
+              withLock: true
+              quota:
+                type: set
+                size: 1GiB
         ingress:
           enabled: true
           ingressClassName: nginx-internal

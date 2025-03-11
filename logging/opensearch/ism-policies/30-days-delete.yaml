@@ -1,0 +1,37 @@
+apiVersion: opensearch.opster.io/v1
+kind: OpenSearchISMPolicy
+metadata:
+  name: "30-days-delete"
+spec:
+  opensearchCluster:
+    name: opensearch-cluster
+  description: Delete content elder than 30 days. Migrate after 10 days from hot to warm.
+  policyId: 30-days-delete-policy
+  defaultState: hot
+  states:
+    - name: hot
+      actions:
+        - replicaCount:
+            numberOfReplicas: 4
+      transitions:
+        - stateName: warm
+          conditions:
+            minIndexAge: "10d"
+    - name: warm
+      actions:
+        - replicaCount:
+            numberOfReplicas: 2
+      transitions:
+        - stateName: delete
+          conditions:
+            minIndexAge: "30d"
+    - name: delete
+      actions:
+        - delete: {}
+  ismTemplate:
+    indexPatterns:
+      - "container-*"
+      - ".ds-container-*"
+      - "access-logs-*"
+      - ".ds-access-logs-*"
+    priority: 1

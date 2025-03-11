@@ -1,0 +1,9 @@
+apiVersion: opensearch.opster.io/v1
+kind: OpensearchIndexTemplate
+metadata:
+  name: network-appgateway-access-logs
+spec:
+  indexPatterns:
+    - network-appgateway-access-logs-*
+  opensearchCluster:
+    name: opensearch-cluster

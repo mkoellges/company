@@ -1,0 +1,69 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: daily-snapshot-policy
+  namespace: logging
+spec:
+  backoffLimit: 3 
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: daily-snapshot-policy
+          image: curlimages/curl:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              curl -k -X POST "https://opensearch-cluster.logging.svc.cluster.local:9200/_plugins/_sm/policies/daily-policy" \
+                -u "admin:$(cat /etc/secrets/password)" \
+                -H "Content-Type: application/json" -d '
+                {
+                  "description": "Daily snapshot policy",
+                  "creation": {
+                    "schedule": {
+                      "cron": {
+                        "expression": "0 8 * * *",
+                        "timezone": "UTC"
+                      }
+                    },
+                    "time_limit": "1h"
+                  },
+                  "deletion": {
+                    "schedule": {
+                      "cron": {
+                        "expression": "0 1 * * *",
+                        "timezone": "Europe/Berlin"
+                      }
+                    },
+                    "condition": {
+                      "max_age": "7d",
+                      "max_count": 21,
+                      "min_count": 7
+                    },
+                    "time_limit": "1h"
+                  },
+                  "snapshot_config": {
+                    "date_format": "yyyy-MM-dd-HH:mm",
+                    "timezone": "Europe/Berlin",
+                    "indices": "*",
+                    "repository": "snapshot-repo",
+                    "ignore_unavailable": "true",
+                    "include_global_state": "false",
+                    "partial": "true",
+                    "metadata": {
+                      "any_key": "any_value"
+                    }
+                  }
+                }'
+          volumeMounts:
+            - name: admin-credentials
+              mountPath: "/etc/secrets"
+              readOnly: true
+      volumes:
+        - name: admin-credentials
+          secret:
+            secretName: admin-credentials-secret
+            items:
+              - key: password
+                path: password

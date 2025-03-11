@@ -1,0 +1,10 @@
+apiVersion: opensearch.opster.io/v1
+kind: OpensearchIndexTemplate
+metadata:
+  name: azure-metrics
+spec:
+  indexPatterns:
+    - azure-metrics-*
+  opensearchCluster:
+    name: opensearch-cluster
+

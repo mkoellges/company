@@ -1,0 +1,20 @@
+apiVersion: opensearch.opster.io/v1
+kind: OpensearchIndexTemplate
+metadata:
+  name: access
+spec:
+  indexPatterns:
+    - access-logs-*
+  opensearchCluster:
+    name: opensearch-cluster
+  dataStream:
+    timestamp_field:
+      name: "@timestamp"
+  template:
+    mappings:
+      dynamic: true
+    settings:
+      index:
+        opendistro:
+          index_state_management:
+            policy_id: "30-days-delete-policy" 
