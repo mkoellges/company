@@ -8,8 +8,8 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://gitlab.com/she-ag/tools/kind/k8s-deployments.git
-    targetRevision: manni
+    repoURL: https://github.com/mkoellges/company.git
+    targetRevision: HEAD
     path: databases
   destination:
     server: https://kubernetes.default.svc
