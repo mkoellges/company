@@ -35,8 +35,6 @@ spec:
               monitoring:
                 tlsConfig:
                   insecureSkipVerify: true
-              pluginsList:
-                - repository-s3
               snapshotRepositories:
                 - name: "snapshot-repo"
                   type: "s3"
