@@ -37,7 +37,6 @@ spec:
                   insecureSkipVerify: true
               pluginsList:
                 - repository-s3
-                - prometheus-exporter
               snapshotRepositories:
                 - name: "snapshot-repo"
                   type: "s3"
