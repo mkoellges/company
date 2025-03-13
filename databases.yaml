@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: secrets
+  name: databases
 #   annotations:
 #     argocd.argoproj.io/sync-wave: "1"
   namespace: argocd
@@ -10,10 +10,10 @@ spec:
   source:
     repoURL: https://gitlab.com/she-ag/tools/kind/k8s-deployments.git
     targetRevision: manni
-    path: secrets
+    path: databases
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: databases
   syncPolicy:
     automated:
       prune: true

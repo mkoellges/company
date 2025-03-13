@@ -35,29 +35,28 @@ spec:
               monitoring:
                 tlsConfig:
                   insecureSkipVerify: true
-            #   snapshotRepositories:
-            #     - name: "snapshot-repo"
-            #       type: "s3"
-            #       settings:
-            #         bucket: "opensearch"
-            #         endpoint: "https://minio.minio.svc.cluster.local:9000"
-            #         pathStyleAccess: "true"
-            #         protocol: "https"
-            #         maxRetries: "3"
-            #         accessKey: "opensearch"
-            #   keystore:
-            #     - secret:
-            #         name: "opensearch-s3-secret"
-            #   keystoreSecrets: 
-            #     - secretName: "opensearch-s3-secret"
-            #       keys:
-            #         - opensearch.s3.client.default.access_key
-            #         - opensearch.s3.client.default.secret
+              snapshotRepositories:
+                - name: "snapshot-repo"
+                  type: "s3"
+                  settings:
+                    bucket: "opensearch"
+                    endpoint: "https://minio.svc:9000"
+                    virtualHostedStyle: "false"
+                    pathStyleAccess: "true"
+                    protocol: "https"
+                    region: "eu-01"
+                    maxRetries: "3"
+              keystore:
+                - secret:
+                    name: opensearch-s3-secret
+                  keyMappings:
+                    secret_key: s3.client.default.secret_key
+                    access_key: s3.client.default.access_key
             nodePools:
               - component: nodes
                 replicas: 3
                 diskSize: "10Gi"
-            #    jvm: -Xmx4096M -Xms4096M
+                jvm: -Xmx4096M -Xms4096M
                 resources:
                   requests:
                     memory: "4Gi"
@@ -102,8 +101,8 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/mkoellges/company.git
-    targetRevision: HEAD
+    repoURL: https://gitlab.com/she-ag/tools/kind/k8s-deployments.git
+    targetRevision: manni
     path: logging/opensearch/
     directory:
       recurse: true

@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: opensearch
+  namespace: minio
+spec:
+  ports:
+    - name: minio-api
+      protocol: TCP
+      port: 9000
+      targetPort: minio-api
+    - name: minio-console
+      protocol: TCP
+      port: 9001
+      targetPort: minio-console
+  selector:
+    app.kubernetes.io/instance: minio
+    app.kubernetes.io/name: minio
